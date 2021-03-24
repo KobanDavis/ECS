@@ -14,10 +14,36 @@ class Movement implements System {
 			this._entities.set(entity.id, entity)
 		}
 	}
+
 	public exit(id: string) {
 		this._entities.delete(id)
 	}
-	public update() {}
+
+	public update() {
+		for (let entity of this._entities.values()) {
+			const position = entity.getComponent('position')
+			const currentPosition = position.value
+			const direction = entity.getComponent('direction')
+			if (direction.value.current) {
+				for (let i = 0; i < direction.value.current.length; i++) {
+					switch (direction.value.current[i]) {
+						case 'n':
+							currentPosition.add({ x: 0, y: -2 })
+							break
+						case 's':
+							currentPosition.add({ x: 0, y: 2 })
+							break
+						case 'w':
+							currentPosition.add({ x: -2, y: 0 })
+							break
+						case 'e':
+							currentPosition.add({ x: 2, y: 0 })
+							break
+					}
+				}
+			}
+		}
+	}
 }
 
 export default Movement

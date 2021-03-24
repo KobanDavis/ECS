@@ -74,16 +74,14 @@ interface Config {
 }
 
 class AssetManager {
-	private _directory: string
 	public models: Map<string, Frames[][]>
 	constructor(_baseDirectory: string) {
-		this._directory = _baseDirectory
 		this.models = new Map()
 	}
 
 	public async loadSpriteSheet(config: Config): Promise<void> {}
 
-	private getImage(path: string, shouldFlip?: boolean) {
+	private _getImage(path: string, shouldFlip?: boolean) {
 		return new Promise<ImageBitmap>((resolve, reject) => {
 			const image = new Image()
 			image.src = path

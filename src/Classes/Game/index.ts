@@ -1,22 +1,21 @@
 import { Canvas } from '@kobandavis/canvas'
-import Entity from '../../ECS/Entity'
-import System from '../../ECS/System'
-import KeyboardInput from '../../Systems/KeyboardInput'
-import RenderStatic from '../../Systems/RenderStatic'
+import { Entity, System } from '../../ECS'
+import { KeyboardInput, Movement, RenderStatic } from '../../Systems'
 
 class Game {
 	private _entities: Map<string, Entity>
-	private canvas: Canvas
-	private systems: System[]
+	private _canvas: Canvas
+	private _systems: System[]
 	constructor() {
 		this._entities = new Map()
-		this.canvas = new Canvas(window.innerWidth, window.innerHeight)
-		this.systems = [new RenderStatic(this.canvas.ctx), new KeyboardInput()]
+		this._canvas = new Canvas(window.innerWidth, window.innerHeight)
+		this._systems = [new RenderStatic(this._canvas.ctx), new KeyboardInput(), new Movement()]
 		this.start = this.start.bind(this)
 	}
 
 	public start(): void {
-		for (let system of this.systems) {
+		this._canvas.resetDraw()
+		for (let system of this._systems) {
 			system.update()
 		}
 		window.requestAnimationFrame(this.start)
@@ -24,13 +23,13 @@ class Game {
 
 	public addEntity(entity: Entity): void {
 		this._entities.set(entity.id, entity)
-		for (let system of this.systems) {
+		for (let system of this._systems) {
 			system.enter(entity)
 		}
 	}
 
 	public removeEntity(id: Entity['id']): void {
-		for (let system of this.systems) {
+		for (let system of this._systems) {
 			system.exit(id)
 		}
 	}

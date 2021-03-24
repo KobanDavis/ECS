@@ -6,22 +6,22 @@ interface Model {
 
 class Model {
 	public async imageToBitmap(image: string): Promise<ImageBitmap> {
-		return this.getImage(image)
+		return this._getImage(image)
 	}
 
-	private getImage(path: string, flip?: boolean) {
+	private _getImage(path: string, flip?: boolean) {
 		return new Promise<ImageBitmap>((resolve, reject) => {
 			const image = new Image()
 			image.src = path
 			image.onerror = reject
 			image.onload = async () => {
-				const bitmap = this.upscaleImage(image, flip)
+				const bitmap = this._upscaleImage(image, flip)
 				resolve(bitmap)
 			}
 		})
 	}
 
-	private upscaleImage(image: HTMLImageElement, flip?: boolean): Promise<ImageBitmap> {
+	private _upscaleImage(image: HTMLImageElement, flip?: boolean): Promise<ImageBitmap> {
 		const createCanvas = (d: number) => {
 			const canvas = document.createElement('canvas')
 			canvas.width = d
@@ -55,13 +55,13 @@ class Model {
 		}
 
 		if (flip) {
-			this.flipCanvas(upscaledCanvas)
+			this._flipCanvas(upscaledCanvas)
 		}
 
 		return createImageBitmap(upscaledCanvas)
 	}
 
-	private flipCanvas(canvas: HTMLCanvasElement) {
+	private _flipCanvas(canvas: HTMLCanvasElement) {
 		const ctx = canvas.getContext('2d')
 		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 		const { data } = imageData

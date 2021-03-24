@@ -7,7 +7,7 @@ const movementKeys: DirectionKey[] = ['w', 'a', 's', 'd']
 class KeyboardInput implements System {
 	private _playerEntity: Entity
 	private _startHandler: (e: KeyboardEvent) => void
-	private stopHandler: (e: KeyboardEvent) => void
+	private _stopHandler: (e: KeyboardEvent) => void
 	private _heldKeys: Set<DirectionKey> = new Set()
 
 	private _createStartHandler() {
@@ -52,9 +52,9 @@ class KeyboardInput implements System {
 		if (this._playerEntity === undefined && this._checkEntityIsPlayer(entity)) {
 			this._playerEntity = entity
 			this._startHandler = this._createStartHandler()
-			this.stopHandler = this._createStopHandler()
+			this._stopHandler = this._createStopHandler()
 			window.addEventListener('keydown', this._startHandler)
-			window.addEventListener('keyup', this.stopHandler)
+			window.addEventListener('keyup', this._stopHandler)
 		}
 	}
 
@@ -67,7 +67,7 @@ class KeyboardInput implements System {
 	public exit(id: string): void {
 		if (this._playerEntity?.id === id) {
 			window.removeEventListener('keydown', this._startHandler)
-			window.removeEventListener('keyup', this.stopHandler)
+			window.removeEventListener('keyup', this._stopHandler)
 		}
 	}
 }

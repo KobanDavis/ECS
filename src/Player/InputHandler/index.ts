@@ -1,37 +1,33 @@
 import Player from '..'
-import { Direction } from '../../types'
+import { Direction, DirectionKey } from '../../types'
 
 interface InputHandler {
 	enable(): void
 	disable(): void
 }
 
-const movementKeysMap: { [k: string]: Direction } = {
-	w: 'up',
-	a: 'left',
-	s: 'down',
-	d: 'right',
-}
+const movementKeys: DirectionKey[] = ['w', 'a', 's', 'd']
 
 class InputHandler {
 	private startHandler: (e: KeyboardEvent) => void
 	private stopHandler: (e: KeyboardEvent) => void
+	private heldKeys: Set<string> = new Set()
 	constructor(private _player: Player) {}
 
 	private createStartHandler() {
 		return (e: KeyboardEvent): void => {
-			const direction = movementKeysMap[e.key.toLowerCase()]
-			if (direction !== null) {
-				this._player.movement.setDirection(direction)
+			const key = e.key.toLowerCase() as DirectionKey
+			if (movementKeys.includes(key)) {
+				this._player.movement.addHeldKey(key)
 			}
 		}
 	}
 
 	private createStopHandler() {
 		return (e: KeyboardEvent): void => {
-			const direction = movementKeysMap[e.key.toLowerCase()]
-			if (direction !== null) {
-				this._player.movement.setDirection(null)
+			const key = e.key.toLowerCase() as DirectionKey
+			if (movementKeys.includes(key)) {
+				this._player.movement.deleteHeldKey(key)
 			}
 		}
 	}

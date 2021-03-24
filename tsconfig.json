@@ -16,6 +16,7 @@
 		"sourceMap": true,
 		"strict": true,
 		"strictNullChecks": false,
+		"noImplicitAny": true,
 		"target": "ES5"
 	},
 	"exclude": ["node_modules"]

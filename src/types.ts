@@ -1,8 +1,12 @@
-export type Direction = 'up' | 'down' | 'left' | 'right'
+import { DynamicAppearance, StaticAppearance, Position, Direction as DirectionComponent } from './Components'
+import Type from './Components/Type'
+
+export type Direction = 'n' | 's' | 'w' | 'e' | 'nw' | 'ne' | 'sw' | 'se'
+export type DirectionKey = 'w' | 'a' | 's' | 'd'
 
 export interface Frames {
-	active: [string, string]
-	idle: string
+	active: ImageBitmap[]
+	idle: ImageBitmap[]
 }
 
 export interface Model {
@@ -11,3 +15,13 @@ export interface Model {
 	left: Frames
 	right: Frames
 }
+
+export interface Components {
+	staticAppearance: StaticAppearance
+	dynamicAppearance: DynamicAppearance
+	position: Position
+	type: Type
+	direction: DirectionComponent
+}
+
+export type ComponentName = keyof Components

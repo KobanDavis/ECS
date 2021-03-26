@@ -30,7 +30,7 @@ class Entity {
 	public print() {
 		const self = { ...this } as any
 		self._components = Object.fromEntries(self._components.entries())
-		console.log(JSON.stringify(this, null, 4))
+		console.log(JSON.stringify(this, null, '\t'))
 		return this
 	}
 }

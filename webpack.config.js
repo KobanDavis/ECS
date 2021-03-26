@@ -9,7 +9,7 @@ const prod = process.env.NODE_ENV === 'production'
 
 module.exports = {
 	output: {
-		filename: '[name].[contenthash].js',
+		filename: '[name].js',
 	},
 	resolve: {
 		extensions: ['.ts', '.js'],

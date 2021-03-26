@@ -1,8 +1,10 @@
 # TODO
 
 -   [ ] Modularise `src/Classes/Game/index.ts` - at the moment it is hardcoded.
+    -   [ ] add ability to unload systems, as they may not be required (e.g disabling input during dialogue)
 -   [ ] Add collision systems
     -   [ ] static using uniform grid(?)
+        -   [ ] only check for collision when dynamicHitbox is next to edge of staticHitbox
     -   [ ] dynamic with a quadtree
 -   [ ] Add rendering
     -   [x] add nearest-neighbour upscaling for pixel feel
@@ -17,3 +19,4 @@
     -   [ ] create room with above algorithm
 -   [ ] Add gamepad input/movement system
 -   [ ] Test KeyboardInput system to update direction on keypress, not on update
+-   [ ] Remove update function from `Component`. Apparently this is not supposed to be a thing

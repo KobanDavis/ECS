@@ -6,6 +6,7 @@ import {
 	Direction as DirectionComponent,
 	AnimationFrameIndex,
 } from './Components'
+import Hitbox from './Components/Hitbox'
 import Type from './Components/Type'
 
 type OrdinalDirection = 'nw' | 'ne' | 'sw' | 'se'
@@ -28,6 +29,7 @@ export interface Components {
 	type: Type
 	direction: DirectionComponent
 	animationFrameIndex: AnimationFrameIndex
+	hitbox: Hitbox
 }
 
 export type ComponentName = keyof Components

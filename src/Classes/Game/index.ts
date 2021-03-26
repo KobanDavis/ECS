@@ -19,6 +19,11 @@ class Game {
 		]
 		this.start = this.start.bind(this)
 		this.addEntity = this.addEntity.bind(this)
+		this._handleCanvasResize()
+	}
+
+	private _handleCanvasResize(): void {
+		window.onresize = () => (console.log('test'), this._canvas.resizeCanvas(window.innerWidth, window.innerHeight))
 	}
 
 	public start(): void {

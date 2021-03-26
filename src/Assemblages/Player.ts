@@ -1,7 +1,8 @@
 import { AnimationFrameIndex, Direction, DynamicAppearance, Position, StaticAppearance, Type } from '../Components'
 import { Entity } from '../ECS'
 import Assemblage, { withEntityFn } from './Assemblage'
-import { Vector } from '@kobandavis/canvas'
+import { Rectangle, Vector } from '@kobandavis/canvas'
+import Hitbox from '../Components/Hitbox'
 
 class Player implements Assemblage {
 	private _entity: Entity
@@ -16,6 +17,12 @@ class Player implements Assemblage {
 		entity.addComponent(new Position(new Vector({ x: 64, y: 64 })))
 		entity.addComponent(new DynamicAppearance('player'))
 		entity.addComponent(new AnimationFrameIndex(0))
+		entity.addComponent(
+			new Hitbox({
+				collisionType: 'dynamic',
+				hitbox: new Rectangle(0, 0, 64, 64),
+			})
+		)
 		this._entity = entity
 		return entity
 	}

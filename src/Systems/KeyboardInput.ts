@@ -51,7 +51,14 @@ class KeyboardInput implements System {
 		if (this._heldKeys.has('a') && !this._heldKeys.has('d')) directions.push('w')
 		else if (this._heldKeys.has('d') && !this._heldKeys.has('a')) directions.push('e')
 
-		return directions.length === 1 ? directions[0] : (directions.join('') as Direction)
+		switch (directions.length) {
+			case 0:
+				return null
+			case 1:
+				return directions[0]
+			default:
+				return directions.join('') as Direction
+		}
 	}
 
 	public enter(entity: Entity): void {

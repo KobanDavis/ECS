@@ -13,7 +13,7 @@ class Player implements Assemblage {
 		const entity = new Entity()
 		entity.addComponent(new Type('player'))
 		entity.addComponent(new Direction(null))
-		entity.addComponent(new Position(new Vector({ x: 0, y: 0 })))
+		entity.addComponent(new Position(new Vector({ x: 64, y: 64 })))
 		entity.addComponent(new DynamicAppearance('player'))
 		entity.addComponent(new AnimationFrameIndex(0))
 		this._entity = entity

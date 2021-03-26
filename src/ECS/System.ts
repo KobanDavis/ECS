@@ -16,7 +16,7 @@ class System {
 	/**
 	 * Called every gameloop
 	 */
-	public update(): void {
+	public update(frame?: number): void {
 		throw Error('Not implemented')
 	}
 }

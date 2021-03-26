@@ -1,9 +1,9 @@
-import Game from '../Classes/Game'
 import { Entity } from '../ECS'
 
+export type withEntityFn = (entity: Entity) => void
+
 class Assemblage {
-	public init: () => Promise<Entity>
-	public loadIntoGame: (game: Game) => void
+	public withEntity: (cb: withEntityFn) => void
 }
 
 export default Assemblage

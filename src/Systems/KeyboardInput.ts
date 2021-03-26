@@ -1,5 +1,4 @@
-import Entity from '../ECS/Entity'
-import System from '../ECS/System'
+import { Entity, System } from '../ECS'
 import { ComponentName, Direction, DirectionKey } from '../types'
 
 const movementKeys: DirectionKey[] = ['w', 'a', 's', 'd']
@@ -9,12 +8,18 @@ class KeyboardInput implements System {
 	private _startHandler: (e: KeyboardEvent) => void
 	private _stopHandler: (e: KeyboardEvent) => void
 	private _heldKeys: Set<DirectionKey> = new Set()
+	private _direction: Direction = null
+
+	private _updateDirection(): void {
+		this._direction = this._getDirectionFromHeldKeys()
+	}
 
 	private _createStartHandler() {
 		return (e: KeyboardEvent): void => {
 			const key = e.key.toLowerCase() as DirectionKey
 			if (movementKeys.includes(key)) {
 				this._heldKeys.add(key)
+				this._updateDirection()
 			}
 		}
 	}
@@ -24,6 +29,7 @@ class KeyboardInput implements System {
 			const key = e.key.toLowerCase() as DirectionKey
 			if (movementKeys.includes(key)) {
 				this._heldKeys.delete(key)
+				this._updateDirection()
 			}
 		}
 	}
@@ -59,8 +65,13 @@ class KeyboardInput implements System {
 	}
 
 	public update() {
+		// should this even be called every update?
+		// maybe just update when this._getDirectionFromHeldKeys is called
 		if (this._playerEntity) {
-			this._playerEntity.getComponent('direction').update(this._getDirectionFromHeldKeys())
+			const direction = this._playerEntity.getComponent('direction')
+			if (direction.value.current !== this._direction) {
+				direction.update(this._direction)
+			}
 		}
 	}
 

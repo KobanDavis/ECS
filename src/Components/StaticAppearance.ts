@@ -1,13 +1,18 @@
 import Component from '../ECS/Component'
 import { ComponentName } from '../types'
 
-class StaticAppearance implements Component {
+interface StaticAppearanceValue {
+	spriteSheetName: string
+	imageName: string
+}
+
+class StaticAppearance implements Component<StaticAppearanceValue> {
 	public name: ComponentName = 'staticAppearance'
-	public value: ImageBitmap
-	constructor(value: ImageBitmap) {
+	public value: StaticAppearanceValue
+	constructor(value: StaticAppearanceValue) {
 		this.value = value
 	}
-	public update(value: ImageBitmap) {
+	public update(value: StaticAppearanceValue) {
 		this.value = value
 	}
 }

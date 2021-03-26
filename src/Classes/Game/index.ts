@@ -1,22 +1,33 @@
 import { Canvas } from '@kobandavis/canvas'
 import { Entity, System } from '../../ECS'
-import { KeyboardInput, Movement, RenderStatic } from '../../Systems'
+import { KeyboardInput, Movement, RenderAnimated, RenderStatic } from '../../Systems'
+import AssetManager from '../AssetManager'
 
 class Game {
-	private _entities: Map<string, Entity>
+	public assetManager = new AssetManager()
+	private _entities = new Map<string, Entity>()
 	private _canvas: Canvas
 	private _systems: System[]
+	private _frame: number = 0
 	constructor() {
-		this._entities = new Map()
 		this._canvas = new Canvas(window.innerWidth, window.innerHeight)
-		this._systems = [new RenderStatic(this._canvas.ctx), new KeyboardInput(), new Movement()]
+		this._systems = [
+			new RenderStatic(this._canvas.ctx, this.assetManager),
+			new RenderAnimated(this._canvas.ctx, this.assetManager),
+			new KeyboardInput(),
+			new Movement(),
+		]
 		this.start = this.start.bind(this)
+		this.addEntity = this.addEntity.bind(this)
 	}
 
 	public start(): void {
+		this._frame++
 		this._canvas.resetDraw()
+		this._canvas.ctx.fillStyle = '#140c1c'
+		this._canvas.ctx.fillRect(0, 0, this._canvas.boundary.width, this._canvas.boundary.height)
 		for (let system of this._systems) {
-			system.update()
+			system.update(this._frame)
 		}
 		window.requestAnimationFrame(this.start)
 	}

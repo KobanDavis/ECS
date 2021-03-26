@@ -1,54 +1,26 @@
-import { Direction, Frames, Model } from '../../types'
+import { Position } from '@kobandavis/canvas'
+import { Direction } from '../../Components'
+import { CardinalDirection, Frames, Model } from '../../types'
 
-function flipCanvas(canvas: HTMLCanvasElement, size: number) {
-	const ctx = canvas.getContext('2d')
-	const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-	const { data } = imageData
-
-	const flippedData = new Uint8ClampedArray(data.length)
-	const lineLength = size * 4
-
-	for (let i = 0; i < size; i++) {
-		const lineIndex = i * lineLength
-		for (let j = 0; j < size; j++) {
-			const pixelIndex = j * 4
-			const oldIndex = lineIndex + pixelIndex
-			const newIndex = lineIndex + (lineLength - pixelIndex - 4)
-			flippedData[oldIndex] = data[newIndex]
-			flippedData[oldIndex + 1] = data[newIndex + 1]
-			flippedData[oldIndex + 2] = data[newIndex + 2]
-			flippedData[oldIndex + 3] = data[newIndex + 3]
-		}
-	}
-
-	imageData.data.set(flippedData)
-	ctx.putImageData(imageData, 0, 0)
+const createCanvas = (width: number, height: number) => {
+	const canvas = document.createElement('canvas')
+	canvas.width = width
+	canvas.height = height
+	return canvas
 }
 
-function upscaleImage(image: HTMLImageElement, flip?: boolean): Promise<ImageBitmap> {
-	const createCanvas = (d: number) => {
-		const canvas = document.createElement('canvas')
-		canvas.width = d
-		canvas.height = d
-		return canvas
-	}
-
-	const oldSize = 32
-	const newSize = 128
+function upscaleCanvas(canvas: HTMLCanvasElement, oldSize: number, newSize: number): HTMLCanvasElement {
 	const zoom = newSize / oldSize
+	const newWidth = canvas.width * zoom
+	const newHeight = canvas.height * zoom
+	const imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data
+	const upscaledCanvas = createCanvas(newWidth, newHeight)
 
-	const initialCanvas = createCanvas(oldSize)
-	const initialCtx = initialCanvas.getContext('2d')
-
-	initialCtx.drawImage(image, 0, 0)
-	const imageData = initialCtx.getImageData(0, 0, image.width, image.height).data
-
-	const upscaledCanvas = createCanvas(newSize)
 	const upscaledCtx = upscaledCanvas.getContext('2d')
 
-	for (let x = 0; x < image.width; ++x) {
-		for (let y = 0; y < image.height; ++y) {
-			const i = (y * image.width + x) * 4
+	for (let x = 0; x < canvas.width; ++x) {
+		for (let y = 0; y < canvas.height; ++y) {
+			const i = (y * canvas.width + x) * 4
 			const r = imageData[i]
 			const g = imageData[i + 1]
 			const b = imageData[i + 2]
@@ -58,37 +30,131 @@ function upscaleImage(image: HTMLImageElement, flip?: boolean): Promise<ImageBit
 		}
 	}
 
-	if (flip) {
-		flipCanvas(upscaledCanvas, newSize)
-	}
-
-	return createImageBitmap(upscaledCanvas)
+	return upscaledCanvas
 }
 
-interface Config {
-	directionOrder: Direction[]
-	activeFrames: number
-	idleFrames: number
+export interface SpriteSheetConfig {
+	resolution: number
+	desiredResolution?: number
 	name: string
-	path: string
+	width: number
+	height: number
+	count: number
+	imageNames: string[][]
+	spriteSheet: string
+}
+
+export interface AnimatedSpriteSheetConfig {
+	resolution: number
+	desiredResolution?: number
+	name: string
+	width: number
+	height: 4
+	spriteSheet: string
+	order: [CardinalDirection, CardinalDirection, CardinalDirection, CardinalDirection]
+	idleFrameIndex: number
+	animationOrder: number[]
+}
+
+interface ImageInfo {
+	bitmap: ImageBitmap
+	width: number
+	height: number
+}
+
+interface ImageData {
+	resolution: number
+	bitmap: ImageBitmap
+	images: {
+		[key: string]: Position
+	}
+}
+
+interface AnimatedImageData {
+	resolution: number
+	bitmap: ImageBitmap
+	model: Model
+	animationOrder: number[]
 }
 
 class AssetManager {
-	public models: Map<string, Frames[][]>
-	constructor(_baseDirectory: string) {
-		this.models = new Map()
+	private _animatedSpriteSheets = new Map<string, AnimatedImageData>()
+	private _spriteSheets = new Map<string, ImageData>()
+
+	public getSpriteSheet(name: string): ImageData {
+		return this._spriteSheets.get(name)
 	}
 
-	public async loadSpriteSheet(config: Config): Promise<void> {}
+	public getAnimatedSpriteSheet(name: string): AnimatedImageData {
+		return this._animatedSpriteSheets.get(name)
+	}
 
-	private _getImage(path: string, shouldFlip?: boolean) {
-		return new Promise<ImageBitmap>((resolve, reject) => {
+	public async loadAnimatedSpriteSheet(config: AnimatedSpriteSheetConfig): Promise<void> {
+		const imageData = await this._getImageInfo(config.spriteSheet, config.resolution, config.desiredResolution)
+		const resolution = config.desiredResolution || config.resolution
+		const model = {} as Model
+
+		for (let i = 0; i < config.height; i++) {
+			const animation: Position[] = []
+			for (let j = 0; j < config.width; j++) {
+				animation.push({
+					x: resolution * j,
+					y: resolution * i,
+				})
+			}
+			model[config.order[i]] = {
+				active: animation,
+				idle: animation[config.idleFrameIndex],
+			}
+		}
+
+		this._animatedSpriteSheets.set(config.name, {
+			resolution,
+			bitmap: imageData.bitmap,
+			model,
+			animationOrder: config.animationOrder,
+		})
+		console.log('animated', this._animatedSpriteSheets)
+	}
+
+	public async loadSpriteSheet(config: SpriteSheetConfig): Promise<void> {
+		const imageData = await this._getImageInfo(config.spriteSheet, config.resolution, config.desiredResolution)
+		const resolution = config.desiredResolution || config.resolution
+		let count = 0
+		const images: ImageData['images'] = {} as any
+		for (let i = 0; i < config.height; i++) {
+			for (let j = 0; j < config.width; j++) {
+				if (count === config.count) break
+				images[config.imageNames[i][j]] = {
+					x: resolution * j,
+					y: resolution * i,
+				}
+				count++
+			}
+		}
+
+		this._spriteSheets.set(config.name, {
+			resolution,
+			bitmap: imageData.bitmap,
+			images,
+		})
+		console.log(this._spriteSheets)
+	}
+
+	private _getImageInfo(path: string, resolution: number, desiredResolution?: number): Promise<ImageInfo> {
+		return new Promise<ImageInfo>((resolve, reject) => {
 			const image = new Image()
 			image.src = path
 			image.onerror = reject
 			image.onload = async () => {
-				const bitmap = upscaleImage(image, shouldFlip)
-				resolve(bitmap)
+				let canvas = createCanvas(image.width, image.height)
+				canvas.getContext('2d').drawImage(image, 0, 0)
+				if (desiredResolution !== undefined) {
+					canvas = upscaleCanvas(canvas, resolution, desiredResolution)
+				}
+				const bitmap = await createImageBitmap(canvas)
+				console.log(canvas.width, canvas)
+				resolve({ bitmap, height: canvas.height, width: canvas.width })
 			}
 		})
 	}

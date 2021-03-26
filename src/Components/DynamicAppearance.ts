@@ -1,18 +1,16 @@
 import Component from '../ECS/Component'
-import { ComponentName, Frames } from '../types'
+import { ComponentName } from '../types'
 
-interface DynamicAppearanceValue {
-	model: Frames[]
-	animationFrame: number
-}
-
-class DynamicAppearance implements Component<DynamicAppearanceValue> {
+class DynamicAppearance implements Component<string> {
 	public name: ComponentName = 'dynamicAppearance'
-	public value: DynamicAppearanceValue
-	constructor(value: DynamicAppearanceValue) {
+	public value: string
+	/**
+	 * @param value The name of the `animatedSpriteSheet` to be loaded from `AssetManager`
+	 */
+	constructor(value: string) {
 		this.value = value
 	}
-	public update(value: DynamicAppearanceValue) {
+	public update(value: string) {
 		this.value = value
 	}
 }

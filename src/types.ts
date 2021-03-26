@@ -1,27 +1,33 @@
-import { DynamicAppearance, StaticAppearance, Position, Direction as DirectionComponent } from './Components'
+import { Position } from '@kobandavis/canvas'
+import {
+	DynamicAppearance,
+	StaticAppearance,
+	Position as PositionComponent,
+	Direction as DirectionComponent,
+	AnimationFrameIndex,
+} from './Components'
 import Type from './Components/Type'
 
-export type Direction = 'n' | 's' | 'w' | 'e' | 'nw' | 'ne' | 'sw' | 'se'
+type OrdinalDirection = 'nw' | 'ne' | 'sw' | 'se'
+export type CardinalDirection = 'n' | 's' | 'w' | 'e'
+export type Direction = OrdinalDirection | CardinalDirection
+
 export type DirectionKey = 'w' | 'a' | 's' | 'd'
 
 export interface Frames {
-	active: ImageBitmap[]
-	idle: ImageBitmap[]
+	active: Position[]
+	idle: Position
 }
 
-export interface Model {
-	up: Frames
-	down: Frames
-	left: Frames
-	right: Frames
-}
+export type Model = Record<CardinalDirection, Frames>
 
 export interface Components {
 	staticAppearance: StaticAppearance
 	dynamicAppearance: DynamicAppearance
-	position: Position
+	position: PositionComponent
 	type: Type
 	direction: DirectionComponent
+	animationFrameIndex: AnimationFrameIndex
 }
 
 export type ComponentName = keyof Components

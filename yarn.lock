@@ -878,10 +878,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@kobandavis/canvas@1.1.13":
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/@kobandavis/canvas/-/canvas-1.1.13.tgz#007d04ecf7341a2e2dbd80baadb82fbf1007c761"
-  integrity sha512-1GOD/Iq98hiyaMrjzBzp4pt+wb717xOlMIfSeXN6puS+PExs4sWq807WS2umSR+Pn/FD5uY4LDGqAA7YA1gUog==
+"@kobandavis/canvas@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@kobandavis/canvas/-/canvas-1.2.0.tgz#897a9399c1f89965da9fbc0eb0939a389dc4720b"
+  integrity sha512-h8SYH1vEEB1k/5DMSGqBZu6ox2aIWLGQy0F5b+Jb4nZS28U3U+mPGTRxn8PQ7O32UI1xgZLnBmRYxUnd9+MFkg==
 
 "@nicolo-ribaudo/chokidar-2@2.1.8-no-fsevents":
   version "2.1.8-no-fsevents"

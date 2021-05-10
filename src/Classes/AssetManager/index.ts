@@ -1,6 +1,5 @@
 import { Position } from '@kobandavis/canvas'
-import { Direction } from '../../Components'
-import { CardinalDirection, Frames, Model } from '../../types'
+import { CardinalDirection, Model } from '../../types'
 
 const createCanvas = (width: number, height: number) => {
 	const canvas = document.createElement('canvas')
@@ -114,7 +113,6 @@ class AssetManager {
 			model,
 			animationOrder: config.animationOrder,
 		})
-		console.log('animated', this._animatedSpriteSheets)
 	}
 
 	public async loadSpriteSheet(config: SpriteSheetConfig): Promise<void> {
@@ -138,7 +136,6 @@ class AssetManager {
 			bitmap: imageData.bitmap,
 			images,
 		})
-		console.log(this._spriteSheets)
 	}
 
 	private _getImageInfo(path: string, resolution: number, desiredResolution?: number): Promise<ImageInfo> {
@@ -153,7 +150,6 @@ class AssetManager {
 					canvas = upscaleCanvas(canvas, resolution, desiredResolution)
 				}
 				const bitmap = await createImageBitmap(canvas)
-				console.log(canvas.width, canvas)
 				resolve({ bitmap, height: canvas.height, width: canvas.width })
 			}
 		})

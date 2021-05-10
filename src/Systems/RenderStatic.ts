@@ -17,7 +17,7 @@ class RenderStatic implements System {
 	private drawEntity(entity: Entity) {
 		const sprite = entity.getComponent('staticAppearance').value
 		const vector = entity.getComponent('position').value
-		const { x: dx, y: dy } = vector.position
+		const { x: dx, y: dy } = vector
 		const { bitmap, images, resolution } = this._assetManager.getSpriteSheet(sprite.spriteSheetName)
 		const { x: sx, y: sy } = images[sprite.imageName]
 		this._ctx.drawImage(bitmap, sx, sy, resolution, resolution, dx, dy, resolution, resolution)

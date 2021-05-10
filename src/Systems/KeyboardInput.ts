@@ -8,10 +8,12 @@ class KeyboardInput implements System {
 	private _startHandler: (e: KeyboardEvent) => void
 	private _stopHandler: (e: KeyboardEvent) => void
 	private _heldKeys: Set<DirectionKey> = new Set()
-	private _direction: Direction = null
 
 	private _updateDirection(): void {
-		this._direction = this._getDirectionFromHeldKeys()
+		if (this._playerEntity) {
+			const direction = this._playerEntity.getComponent('direction')
+			direction.update(this._getDirectionFromHeldKeys())
+		}
 	}
 
 	private _createStartHandler() {
@@ -72,14 +74,7 @@ class KeyboardInput implements System {
 	}
 
 	public update() {
-		// should this even be called every update?
-		// maybe just update when this._getDirectionFromHeldKeys is called
-		if (this._playerEntity) {
-			const direction = this._playerEntity.getComponent('direction')
-			if (direction.value.current !== this._direction) {
-				direction.update(this._direction)
-			}
-		}
+		// no-op
 	}
 
 	public exit(id: string): void {

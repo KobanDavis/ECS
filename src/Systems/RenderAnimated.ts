@@ -21,9 +21,9 @@ class RenderAnimated implements System {
 		const animationFrameIndex = entity.getComponent('animationFrameIndex')
 		const animatedSpriteSheetName = entity.getComponent('dynamicAppearance').value
 		const direction = entity.getComponent('direction').value
-		const vector = entity.getComponent('position').value
-		const { x: dx, y: dy } = vector.position
-		const { bitmap, model, resolution } = this._assetManager.getAnimatedSpriteSheet(animatedSpriteSheetName)
+
+		const { x: dx, y: dy } = entity.getComponent('position').value
+		const { bitmap, model, resolution, animationOrder } = this._assetManager.getAnimatedSpriteSheet(animatedSpriteSheetName)
 
 		const cardinal = (direction.last?.charAt(direction.last.length - 1) || 's') as CardinalDirection
 		const frames = model[cardinal]
@@ -34,9 +34,9 @@ class RenderAnimated implements System {
 			}
 			position = frames.idle
 		} else {
-			position = frames.active[animationFrameIndex.value]
+			position = frames.active[animationOrder[animationFrameIndex.value]]
 			if (frame % 16 == 0) {
-				animationFrameIndex.update((frames.active.length % (animationFrameIndex.value + 1)) + 1)
+				animationFrameIndex.update((animationFrameIndex.value + 1) % frames.active.length)
 			}
 		}
 		const sx = position.x

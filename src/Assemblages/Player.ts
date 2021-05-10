@@ -26,6 +26,7 @@ class Player implements Assemblage {
 		this._entity = entity
 		return entity
 	}
+
 	public withEntity(fn: withEntityFn) {
 		fn(this._entity)
 	}

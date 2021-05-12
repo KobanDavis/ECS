@@ -1,4 +1,3 @@
-import { ComponentName, Components } from '../types'
 import Component from './Component'
 
 class Entity {
@@ -11,7 +10,7 @@ class Entity {
 		this.getComponent = this.getComponent.bind(this)
 	}
 
-	public getComponent<T extends ComponentName>(name: T): Components[T] {
+	public getComponent<T = any>(name: string): Component<T> {
 		return this._components.get(name)
 	}
 	public hasComponent(name: Component['name']): boolean {

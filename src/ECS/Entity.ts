@@ -4,12 +4,6 @@ class Entity {
 	private _components = new Map<string, Component>()
 	public id = Math.random().toString().slice(2)
 
-	constructor() {
-		this.hasComponent = this.hasComponent.bind(this)
-		this.addComponent = this.addComponent.bind(this)
-		this.getComponent = this.getComponent.bind(this)
-	}
-
 	public getComponent<T = any>(name: string): Component<T> {
 		return this._components.get(name)
 	}
@@ -26,10 +20,10 @@ class Entity {
 		return this
 	}
 
-	public print() {
+	public print(): this {
 		const self = { ...this } as any
 		self._components = Object.fromEntries(self._components.entries())
-		console.log(JSON.stringify(this, null, '\t'))
+		console.log(JSON.stringify(self, null, '\t'))
 		return this
 	}
 }

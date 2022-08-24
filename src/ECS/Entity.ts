@@ -1,13 +1,14 @@
+import { ComponentName, Components } from './types'
 import Component from './Component'
 
 class Entity {
 	private _components = new Map<string, Component>()
 	public id = Math.random().toString().slice(2)
 
-	public getComponent<T = any>(name: string): Component<T> {
-		return this._components.get(name)
+	public getComponent<T extends ComponentName>(name: T): Components[T] {
+		return this._components.get(name) as Components[T]
 	}
-	public hasComponent(name: Component['name']): boolean {
+	public hasComponent(name: ComponentName): boolean {
 		return this._components.has(name)
 	}
 	public addComponent(component: Component): this {

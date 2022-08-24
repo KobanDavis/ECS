@@ -1,6 +1,6 @@
 import Entity from './Entity'
 
-class System {
+abstract class System {
 	/**
 	 * Called when entity added
 	 */

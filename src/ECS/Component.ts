@@ -1,5 +1,7 @@
-class Component<T = any> {
-	public name: string
+import { ComponentName } from './types'
+
+abstract class Component<T = any> {
+	public name: ComponentName
 	public value: T
 	public update(value: any): void {}
 }
